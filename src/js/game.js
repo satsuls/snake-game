@@ -35,11 +35,12 @@ score = document.querySelector('span')
 
 let isPaused = false
 window.addEventListener('keyup', (e) => {
-    if (!isPaused && e.key == 'p'){
+    if (!isPaused && e.keyCode == 80){
         isPaused = true
-    }else if (isPaused && e.key == 'p'){
+    }else if (isPaused && e.keyCode == 80){
         isPaused = false
     }   
+    
 })
 
 function isRectsConntact(r1, r2) {
@@ -131,7 +132,7 @@ function animateLasers(dt, container) {
   for (let i = 0; i < lasers.length; i++) {
     const laser = lasers[i];
     laser.y -= dt * LASER_MAX_SPEED;
-    if (laser.y < 0) {
+    if (laser.y - 20 < 0 ) {
       destroyLaser(container, laser);
     }
     setPosition(laser.element, laser.x, laser.y);

@@ -35,12 +35,12 @@ score = document.querySelector('span')
 
 let isPaused = false
 window.addEventListener('keyup', (e) => {
-    if (!isPaused && e.keyCode == 80){
-        isPaused = true
-    }else if (isPaused && e.keyCode == 80){
-        isPaused = false
-    }   
-    
+  if (!isPaused && e.keyCode == 80) {
+    isPaused = true
+  } else if (isPaused && e.keyCode == 80) {
+    isPaused = false
+  }
+
 })
 
 function isRectsConntact(r1, r2) {
@@ -132,7 +132,7 @@ function animateLasers(dt, container) {
   for (let i = 0; i < lasers.length; i++) {
     const laser = lasers[i];
     laser.y -= dt * LASER_MAX_SPEED;
-    if (laser.y - 20 < 0 ) {
+    if (laser.y - 20 < 0) {
       destroyLaser(container, laser);
     }
     setPosition(laser.element, laser.x, laser.y);
@@ -231,7 +231,7 @@ function animateEnemyLasers(dt, container) {
 function init() {
   const container = document.querySelector(".game");
   createPlayer(container);
-  
+
   const enemySpacing =
     (GAME_WIDTH - ENEMY_HORIZONTAL_PADDING * 2) / (ENEMIES_PER_ROW - 1);
   for (let j = 0; j < 3; j++) {
@@ -262,11 +262,11 @@ function animate(e) {
   }
 
   const container = document.querySelector(".game");
-  if (!isPaused){
-      animatePlayer(dt, container);
-      animateLasers(dt, container);
-      animateEnemies(dt, container);
-      animateEnemyLasers(dt, container);
+  if (!isPaused) {
+    animatePlayer(dt, container);
+    animateLasers(dt, container);
+    animateEnemies(dt, container);
+    animateEnemyLasers(dt, container);
   }
 
   GAME_STATE.lastTime = currentTime;
@@ -292,6 +292,29 @@ function onKeyUp(e) {
     GAME_STATE.spacePressed = false;
   }
 }
+
+function postScore() {
+  //TODO: use parsed data instead of hardcoded
+  var payload = {
+    player: "Player1",
+    score: 100,
+    time: 20
+  };
+
+  fetch('/api/addscore', {
+    method: 'post',
+    body: JSON.stringify(payload)
+  })
+}
+
+function getScoreBoard() {
+  fetch('/api/scoreboard', {
+    method: 'get'
+  }).then(res => res.json())
+    .then(res => console.log(res));
+}
+
+
 
 init();
 window.addEventListener("keydown", onKeyDown);

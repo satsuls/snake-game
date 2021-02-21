@@ -1,35 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space Game</title>
-    <link rel="stylesheet" href="src/css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Space Game</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
-    <div class="wrapper">
-        <header>
-            <div>SpacE InvaderS</div>
-            <button class="btn" onclick="window.location.reload()">Start/Restart</button> 
-            <div>SCORE: <span>0</span></div>
-        </header>
-        <div class="game-wrapper">
-            <div class="game"></div>
-            <div class="congratulations">
-                <h1>Congratulations!</h1>
-                <h2>You won the game</h2>
-                <button class="btn" onclick="window.location.reload()">Restart</button>
-              </div>
-              <div class="game-over">
-                <h1>GAME OVER</h1>
-                <h2>You lost the game</h2>
-                <button class="btn" onclick="window.location.reload()">Restart</button>
-              </div>
-        </div>
-        <footer>
-            <div>left/right keys to move, spacebar to shoot, P to pause</div>
-        </footer>
+  <div class="wrap">
+    <header>Space Invaders</header>
+    <header class="game-panel">
+      <h5>Life: <span id="life"></span> | Score: <span id="score"></span> | Time: <span id="time"></span></h5>
+    </header>
+    <div class="game-wrapper">
+      <div class="game"></div>
+      <div class="main-menu">
+        <h2>Space Invaders</h2>
+        <button class="start-game">Start game</button>
+        <button class="scoreboard">Scoreboard</button>
+      </div>
+      <div class="pause">
+        <button class="restart">Restart</button>
+        <button class="continue">Continue</button>
+        <button class="back-to-menu-from-game">Main menu</button>
+      </div>
+      <div class="scoreboard-display">
+        <table class="scoreboard-table">
+          <tr>
+            <th>Rank</th>
+            <th>Name</th>
+            <th>Score</th>
+            <th>Time</th>
+          </tr>
+        </table>
+        <button class="pagination_1">1</button>
+        <button class="pagination_2">2</button>
+        <button class="pagination_3">3</button>
+        <button class="pagination_4">4</button>
+        <button class="pagination_5">5</button>
+        <button class="back-to-menu-from-scoreboard">Back</button>
+      </div>
+      <div class="congratulations">
+        <button class="restart-win">Restart</button>
+        <button class="back-to-menu-from-win">Main menu</button>
+      </div>
+      <div class="game-over">
+        <button class="restart-lose">Restart</button>
+        <button class="back-to-menu-from-lose">Main menu</button>
+      </div>
     </div>
-    <script src="src/js/game.js"></script>
+    <footer>Left/right keys to move, spacebar to shoot, P to pause</footer>
+  </div>
+  <script src="js/game.js "></script>
 </body>
+
 </html>

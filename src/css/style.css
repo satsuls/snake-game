@@ -9,7 +9,7 @@ body {
   font: 16px sans-serif;
 }
 
-.wrapper {
+.wrap {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -25,7 +25,7 @@ header {
 footer {
   padding: 10px;
   text-align: center;
-  /* font-size: 11px; */
+  font-size: 11px;
   background: black;
   color: white;
 }
@@ -35,12 +35,12 @@ footer {
   display: flex;
   justify-content: center;
   align-items: center;
-  background:white;
+  background: #222;
 }
 .game {
   width: 800px;
   height: 600px;
-  background: url(../images/background.png);
+  background: url(../img/background-blue.png);
   animation: scroll-background 5s linear infinite;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   position: relative;
@@ -104,6 +104,19 @@ footer {
   animation: pop-in 1s;
 }
 
+.pause{
+  display: none;
+  position: absolute;
+  background: #6b1818;
+  color: white;
+  padding: 20px 50px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  text-align: center;
+  animation: pop-in 1s;
+}
+
+
 .btn {
   border: 2px solid #36bbf5;
   border-radius: 3px;
@@ -132,4 +145,85 @@ footer {
   100% {
     transform: translate(0, 0);
   }
+}
+
+
+
+
+
+
+
+
+
+.main-menu{
+  display: none;
+  position: absolute;
+  background: #6b1818;
+  color: white;
+  padding: 20px 50px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  text-align: center;
+  animation: pop-in 1s;
+}
+
+
+.scoreboard-display{
+  display: none;
+  position: absolute;
+  background: #6b1818;
+  color: white;
+  padding: 20px 50px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  text-align: center;
+  animation: pop-in 1s;
+}
+
+
+
+.congratulations {
+  display: none;
+  position: absolute;
+  background: #c7a526;
+  color: white;
+  padding: 20px 50px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  text-align: center;
+  animation: pop-in 1s;
+}
+
+.game-over {
+  display: none;
+  position: absolute;
+  background: #6b1818;
+  color: white;
+  padding: 20px 50px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  text-align: center;
+  animation: pop-in 1s;
+}
+
+.pause{
+  display: none;
+  position: absolute;
+  background: #6b1818;
+  color: white;
+  padding: 20px 50px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  text-align: center;
+  animation: pop-in 1s;
+}
+
+.game-panel{
+  display: block  ;
+  background: #6b1818;
+  color: white;
+  padding: 20px 50px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  animation: pop-in 1s;
 }

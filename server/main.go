@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	scoreBoardFileName = "./scoreboard.json"
-	templateFileName   = "./../src/index.html"
+	scoreBoardFileName = "./server/scoreboard/scoreboard.json"
+	templateFileName   = "./src/index.html"
 )
 
 var tmpl *template.Template
@@ -21,7 +21,7 @@ func main() {
 		log.Fatalf("Can't load template: %s", err.Error())
 	}
 
-	src := http.FileServer(http.Dir("./../src"))
+	src := http.FileServer(http.Dir("./src"))
 	http.Handle("/src/", http.StripPrefix("/src/", src))
 
 	http.HandleFunc("/", enableCORS(gameIndexHandler))

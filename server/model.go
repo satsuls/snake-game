@@ -28,7 +28,19 @@ func (s Score) WriteToFile(fileName string) error {
 		return err
 	}
 
-	scoreBoard = append(scoreBoard, s)
+	found := false
+	for i, v := range scoreBoard {
+		if s.Player == v.Player {
+			found = true
+			if s.Score > v.Score {
+				scoreBoard[i] = s
+			}
+		}
+	}
+
+	if !found {
+		scoreBoard = append(scoreBoard, s)
+	}
 
 	data, err := json.Marshal(scoreBoard)
 	if err != nil {

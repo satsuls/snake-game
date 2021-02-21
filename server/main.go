@@ -24,15 +24,25 @@ func main() {
 	src := http.FileServer(http.Dir("./../src"))
 	http.Handle("/src/", http.StripPrefix("/src/", src))
 
-	http.HandleFunc("/", enableCORS(game))
-	http.HandleFunc("/api/addscore", enableCORS(addScore))
-	http.HandleFunc("/api/scoreboard", enableCORS(getScoreBoard))
+	http.HandleFunc("/", enableCORS(gameIndexHandler))
+	http.HandleFunc("/api/scoreboard", enableCORS(scoreBoardHandler))
 
 	log.Fatalln(http.ListenAndServe(":8080", nil))
 }
 
-func game(w http.ResponseWriter, r *http.Request) {
+func gameIndexHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, nil)
+}
+
+func scoreBoardHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		getScoreBoard(w, r)
+	case http.MethodPost:
+		addScore(w, r)
+	default:
+		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
 }
 
 func getScoreBoard(w http.ResponseWriter, r *http.Request) {

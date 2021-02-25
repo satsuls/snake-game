@@ -104,6 +104,17 @@ footer {
   animation: pop-in 1s;
 }
 
+.name-input {
+  display:none;
+  position:fixed;
+  top: 58%; 
+  color: white;
+  padding: 20px 40px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  text-align: center;
+  animation: pop-in 1s;
+}
 .pause{
   display: none;
   position: absolute;

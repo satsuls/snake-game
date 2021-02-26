@@ -518,9 +518,7 @@ function parseScores(res, skip, player) {
     for (let i = 0; i < res.length; i++) {
         if (player == res[i].player) {
             let rank = i + 1
-            console.log(i, res.length)
-            let percentage = (i / res.length) * 100
-
+            let percentage = ((rank / res.length) * 100).toFixed(2)
             let topMessage = document.querySelector(".top-message")
             topMessage.innerHTML = `Congrats ${player}, you are in the top ${percentage}%, in the ${rank} position`
             break
@@ -534,12 +532,6 @@ function parseScores(res, skip, player) {
 
         let rank = i + 1
         let time = formatTime(res[i].time)
-        let percentage = i / 50
-
-        if (player == res[i].player) {
-            let topMessage = document.querySelector(".top-message")
-            topMessage.innerHTML = `Congrats ${player}, you are in the top ${percentage}%, in the ${rank} position`
-        }
 
         tableContent += '<tr><td>' +
             rank + '</td><td>' +

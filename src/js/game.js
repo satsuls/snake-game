@@ -16,7 +16,7 @@ const ENEMY_VERTICAL_PADDING = 70;
 const ENEMY_VERTICAL_SPACING = 80;
 const ENEMY_COOLDOWN = 5.0;
 
-const GAME_STATE = {
+let GAME_STATE = {
   lastTime: Date.now(),
   leftPressed: false,
   rightPressed: false,
@@ -27,11 +27,22 @@ const GAME_STATE = {
   lasers: [],
   enemies: [],
   enemyLasers: [],
-  gameOver: false
+  playerLives: 2,
+  gameOver: false,
+  levelSets: [0, 0],
+  level: 1
 };
 
+const TimerState = {
+  currentTime: 0,
+  lastUpdate: 0
+}
+
 gameScore = 0
-score = document.querySelector('span')
+score = document.querySelector('.score')
+lives = document.querySelector('.lives')
+level = document.querySelector('.level')
+timer = document.querySelector(".timer")
 
 let isPaused = false
 window.addEventListener('keyup', (e) => {
@@ -76,7 +87,7 @@ function createPlayer(container) {
   GAME_STATE.playerX = GAME_WIDTH / 2;
   GAME_STATE.playerY = GAME_HEIGHT - 50;
   const player = document.createElement("img");
-  player.src = "src/images/player.png";
+  player.src = "images/player.png";
   player.className = "player";
   container.appendChild(player);
   setPosition(player, GAME_STATE.playerX, GAME_STATE.playerY);
@@ -85,8 +96,6 @@ function createPlayer(container) {
 function destroyPlayer(container, player) {
   container.removeChild(player);
   GAME_STATE.gameOver = true;
-  const audio = new Audio("src/sound/sfx-lose.ogg");
-  audio.play();
 }
 
 function animatePlayer(dt, container) {
@@ -117,12 +126,12 @@ function animatePlayer(dt, container) {
 
 function createLaser(container, x, y) {
   const element = document.createElement("img");
-  element.src = "src/images/player-laser.png";
+  element.src = "images/player-laser.png";
   element.className = "laser";
   container.appendChild(element);
   const laser = { x, y, element };
   GAME_STATE.lasers.push(laser);
-  const audio = new Audio("src/sound/sfx-laser1.ogg");
+  const audio = new Audio("sound/sfx-laser1.ogg");
   audio.play();
   setPosition(element, x, y);
 }
@@ -159,7 +168,7 @@ function destroyLaser(container, laser) {
 
 function createEnemy(container, x, y) {
   const element = document.createElement("img");
-  element.src = "src/images/enemy.png";
+  element.src = "images/" + GAME_STATE.level +"_lvl_enemy.png";
   element.className = "enemy";
   container.appendChild(element);
   const enemy = {
@@ -173,8 +182,8 @@ function createEnemy(container, x, y) {
 }
 
 function animateEnemies(dt, container) {
-  const dx = Math.sin(GAME_STATE.lastTime / 1000.0) * 50;
-  const dy = Math.cos(GAME_STATE.lastTime / 1000.0) * 10;
+  const dx = Math.sin(GAME_STATE.lastTime / 1000.0) * GAME_STATE.levelSets[0];
+  const dy = Math.cos(GAME_STATE.lastTime / 1000.0) * GAME_STATE.levelSets[1];
 
   const enemies = GAME_STATE.enemies;
   for (let i = 0; i < enemies.length; i++) {
@@ -200,7 +209,7 @@ function destroyEnemy(container, enemy) {
 
 function createEnemyLaser(container, x, y) {
   const element = document.createElement("img");
-  element.src = "src/images/enemy-laser.png";
+  element.src = "images/enemy-laser.png";
   element.className = "enemy-laser";
   container.appendChild(element);
   const laser = { x, y, element };
@@ -221,15 +230,26 @@ function animateEnemyLasers(dt, container) {
     const player = document.querySelector(".player");
     const r2 = player.getBoundingClientRect();
     if (isRectsConntact(r1, r2)) {
-      destroyPlayer(container, player);
-      break;
+      if (GAME_STATE.playerLives === 0){
+        destroyPlayer(container, player);
+        break;
+      }
+      GAME_STATE.playerLives -= 1
+      lives.textContent = GAME_STATE.playerLives
+      destroyLaser(container, laser)
     }
   }
   GAME_STATE.enemyLasers = GAME_STATE.enemyLasers.filter(e => !e.isDead);
 }
 
 function init() {
+
   const container = document.querySelector(".game");
+  const lasers = GAME_STATE.lasers;
+  for (let i = 0; i < lasers.length; i++) {
+    destroyLaser(container, lasers[i]);
+  }
+  
   createPlayer(container);
 
   const enemySpacing =
@@ -243,32 +263,44 @@ function init() {
   }
 }
 
-function playerHasWon() {
+function playerHasWonLevel() {
   return GAME_STATE.enemies.length === 0;
 }
 
 function animate(e) {
   const currentTime = Date.now();
   const dt = (currentTime - GAME_STATE.lastTime) / 1000.0;
-
+  const container = document.querySelector(".game");
+  startTimer()
+  
   if (GAME_STATE.gameOver) {
     document.querySelector(".game-over").style.display = "block";
     return;
   }
-
-  if (playerHasWon()) {
+  
+  if (playerHasWonLevel() && GAME_STATE.level == 2) {
     document.querySelector(".congratulations").style.display = "block";
     return;
   }
 
-  const container = document.querySelector(".game");
+  if (playerHasWonLevel()){
+    const player = document.querySelector(".player")
+    destroyPlayer(container, player)
+    GAME_STATE.gameOver = false
+    GAME_STATE.levelSets = [50, 10]
+    GAME_STATE.level += 1
+    level.textContent = GAME_STATE.level
+    
+    init()
+  }
+  
+  
   if (!isPaused) {
     animatePlayer(dt, container);
     animateLasers(dt, container);
     animateEnemies(dt, container);
     animateEnemyLasers(dt, container);
   }
-
   GAME_STATE.lastTime = currentTime;
   window.requestAnimationFrame(animate);
 }
@@ -293,30 +325,22 @@ function onKeyUp(e) {
   }
 }
 
-function postScore() {
-  //TODO: use parsed data instead of hardcoded
-  var payload = {
-    player: "Player1",
-    score: 100,
-    time: 20
-  };
-
-  fetch('/api/addscore', {
-    method: 'post',
-    body: JSON.stringify(payload)
-  })
+function timeParser(time){
+    gameTime = parseInt(time.split(":")[0]) * 60 + parseInt(time.split(":")[1]) + 1
+    minutes = ((Math.floor(gameTime / 60) < 10) ? "0" + Math.floor(gameTime / 60) :  Math.floor(gameTime / 60))
+    seconds = ((gameTime % 60 < 10) ? "0" + gameTime % 60 : gameTime % 60 )
+    return minutes + ":" + seconds
 }
 
-function getScoreBoard() {
-  fetch('/api/scoreboard', {
-    method: 'get'
-  }).then(res => res.json())
-    .then(res => console.log(res));
+function startTimer(){
+  TimerState.currentTime = Date.now()
+    if (isPaused===false && TimerState.currentTime - TimerState.lastUpdate >= 1000){
+        timer.innerHTML = timeParser(timer.innerHTML)
+        TimerState.lastUpdate = Date.now()
+    }
 }
-
-
 
 init();
+animate()
 window.addEventListener("keydown", onKeyDown);
 window.addEventListener("keyup", onKeyUp);
-window.requestAnimationFrame(animate);

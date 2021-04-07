@@ -4,32 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Space Game</title>
-    <link rel="stylesheet" href="src/css/style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div class="wrapper">
         <header>
             <div>SpacE InvaderS</div>
             <button class="btn" onclick="window.location.reload()">Start/Restart</button> 
-            <div>SCORE: <span>0</span></div>
+            <div>SCORE: <span class="score">0</span> | Lives: <span class="lives">2</span> | Timer: <span class="timer">00:00</span> | Level <span class="level">1</span></div>
         </header>
         <div class="game-wrapper">
             <div class="game"></div>
             <div class="congratulations">
                 <h1>Congratulations!</h1>
                 <h2>You won the game</h2>
-                <button class="btn" onclick="window.location.reload()">Restart</button>
+                <button class="btn_1" onclick="window.location.reload()">Restart</button>
               </div>
               <div class="game-over">
                 <h1>GAME OVER</h1>
                 <h2>You lost the game</h2>
-                <button class="btn" onclick="window.location.reload()">Restart</button>
+                <button class="btn_2" onclick="window.location.reload()">Restart</button>
               </div>
         </div>
         <footer>
             <div>left/right keys to move, spacebar to shoot, P to pause</div>
         </footer>
     </div>
-    <script src="src/js/game.js"></script>
+    <script src="js/game.js"></script>
 </body>
 </html>

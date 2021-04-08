@@ -2,6 +2,19 @@ const KEY_CODE_LEFT = 37;
 const KEY_CODE_RIGHT = 39;
 const KEY_CODE_SPACE = 32;
 
+const enemyPattern = {
+  1: [[0, 1, 0, 1, 0, 1, 0, 1, 0, 1 ],
+      [1, 0, 1, 0, 1, 0, 1, 0, 1, 0 ],
+      [0, 1, 0, 1, 0, 1, 0, 1, 0, 1 ]],
+  2: [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
+      [0, 0, 1, 1, 1, 1, 1, 1, 0, 0 ],
+      [0, 0, 0, 0, 1, 1, 0, 0, 0, 0 ]],
+  3: [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
+      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
+      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ]],
+}
+
+
 const GAME_WIDTH = 800;
 const GAME_HEIGHT = 600;
 
@@ -29,7 +42,7 @@ let GAME_STATE = {
   enemyLasers: [],
   playerLives: 2,
   gameOver: false,
-  levelSets: [0, 0],
+  levelSets: [50, 0],
   level: 1
 };
 
@@ -242,23 +255,29 @@ function animateEnemyLasers(dt, container) {
   GAME_STATE.enemyLasers = GAME_STATE.enemyLasers.filter(e => !e.isDead);
 }
 
-function init() {
-
+function init(level) {
   const container = document.querySelector(".game");
   const lasers = GAME_STATE.lasers;
   for (let i = 0; i < lasers.length; i++) {
     destroyLaser(container, lasers[i]);
   }
-  
   createPlayer(container);
+  createEnemies(level)
 
+}
+
+function createEnemies(level){
+  const container = document.querySelector(".game");
   const enemySpacing =
     (GAME_WIDTH - ENEMY_HORIZONTAL_PADDING * 2) / (ENEMIES_PER_ROW - 1);
-  for (let j = 0; j < 3; j++) {
-    const y = ENEMY_VERTICAL_PADDING + j * ENEMY_VERTICAL_SPACING;
-    for (let i = 0; i < ENEMIES_PER_ROW; i++) {
-      const x = i * enemySpacing + ENEMY_HORIZONTAL_PADDING;
-      createEnemy(container, x, y);
+  const pattern = enemyPattern[level]
+  for (let i = 0; i < pattern.length; i += 1){
+    const y = ENEMY_VERTICAL_PADDING + i * ENEMY_VERTICAL_SPACING;
+    for (let j = 0; j < pattern[0].length; j += 1){
+      const x = j * enemySpacing + ENEMY_HORIZONTAL_PADDING;
+      if (pattern[i][j] === 1){
+          createEnemy(container, x, y);
+      }
     }
   }
 }
@@ -278,7 +297,7 @@ function animate(e) {
     return;
   }
   
-  if (playerHasWonLevel() && GAME_STATE.level == 2) {
+  if (playerHasWonLevel() && GAME_STATE.level == 3) {
     document.querySelector(".congratulations").style.display = "block";
     return;
   }
@@ -290,8 +309,7 @@ function animate(e) {
     GAME_STATE.levelSets = [50, 10]
     GAME_STATE.level += 1
     level.textContent = GAME_STATE.level
-    
-    init()
+    init(GAME_STATE.level)
   }
   
   
@@ -340,7 +358,7 @@ function startTimer(){
     }
 }
 
-init();
+init(1);
 animate()
 window.addEventListener("keydown", onKeyDown);
 window.addEventListener("keyup", onKeyUp);

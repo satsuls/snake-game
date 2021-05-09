@@ -194,15 +194,15 @@ function createEnemy(container, x, y) {
   setPosition(element, x, y);
 }
 
+let angle = 0
+let radius = 30
 function animateEnemies(dt, container) {
-  const dx = Math.sin(GAME_STATE.lastTime / 1000.0) * GAME_STATE.levelSets[0];
-  const dy = Math.cos(GAME_STATE.lastTime / 1000.0) * GAME_STATE.levelSets[1];
-
   const enemies = GAME_STATE.enemies;
+  angle = (angle + Math.PI / 360) % (Math.PI * 2);
   for (let i = 0; i < enemies.length; i++) {
     const enemy = enemies[i];
-    const x = enemy.x + dx;
-    const y = enemy.y + dy;
+    const x = enemy.x + radius * Math.cos(angle)
+    const y = enemy.y + radius * Math.sin(angle)
     setPosition(enemy.element, x, y);
     enemy.cooldown -= dt;
     if (enemy.cooldown <= 0) {

@@ -40,25 +40,6 @@ const levels = [
     ],
 ]
 
-
-// const levels = [
-//     [
-//         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-//         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-//         [0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
-//     ],
-//     [
-//         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-//         [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-//         [0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
-//     ],
-//     [
-//         [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-//         [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-//         [0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
-//     ],
-// ]
-
 const GAME_STATE = {
     lastTime: Date.now(),
     time: 0,
@@ -317,7 +298,6 @@ function init(level) {
 
 
 function createEnemies(level) {
-
     const enemySpacing = (GAME_WIDTH - ENEMY_HORIZONTAL_PADDING * 2) / (ENEMIES_PER_ROW - 1);
     const pattern = levels[level - 1]
     for (let i = 0; i < pattern.length; i += 1) {
@@ -333,9 +313,6 @@ function createEnemies(level) {
 
 
 function reset() {
-
-
-
     if (document.querySelector(".player") !== null) {
         destroyPlayer(document.querySelector(".player"))
     }
@@ -452,8 +429,6 @@ document.querySelector(".continue").addEventListener("click", (e) => {
     clearDisplay();
     GAME_STATE.pause = false;
 })
-
-
 
 
 document.querySelector(".back-to-menu-from-game").addEventListener("click", (e) => {

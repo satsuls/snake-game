@@ -83,6 +83,10 @@ func (s *ScoreBoard) ReadFromFile(fileName string) error {
 		return err
 	}
 
+	if len(data) == 0 {
+		data = []byte("[]")
+	}
+
 	err = json.Unmarshal(data, &s)
 	if err != nil {
 		return err

@@ -9,7 +9,7 @@ const GAME_WIDTH = 800;
 const GAME_HEIGHT = 600;
 
 const PLAYER_WIDTH = 20;
-const PLAYER_MAX_SPEED = 400;
+const PLAYER_MAX_SPEED = 350;
 const LASER_MAX_SPEED = 350;
 const LASER_COOLDOWN = 0.5;
 
@@ -268,7 +268,7 @@ function updateEnemy(dt) {
         const enemy = enemies[i];
         const x = enemy.x + radius * Math.cos(angle)
         const y = enemy.y + radius * Math.sin(angle)
-        setPositions(enemy.element, x, y );
+        setPositions(enemy.element, x, y);
         enemy.cooldown -= dt;
         if (enemy.cooldown <= 0) {
             createEnemyLaser(x, y);
@@ -362,7 +362,7 @@ function update() {
     if (!GAME_STATE.pause) {
         GAME_STATE.time += 1 / 60
 
-       hud.time.innerHTML = formatTime(GAME_STATE.time)
+        hud.time.innerHTML = formatTime(GAME_STATE.time)
 
         updatePlayer(dt);
         updateLasers(dt);
@@ -388,7 +388,7 @@ function update() {
         destroyPlayer()
         GAME_STATE.gameOver = false
         GAME_STATE.level += 1
-        
+
         init(GAME_STATE.level)
     }
 
@@ -444,37 +444,41 @@ document.querySelector(".submit").addEventListener("click", (e) => {
 })
 
 ////////////////////////// Scoreboard
+
 document.querySelector(".back-to-menu-from-scoreboard").addEventListener("click", (e) => {
     start()
     const table = document.querySelector(".scoreboard-table")
     table.innerHTML = '<tr><th>' + 'Rank' + '</th><th>' + 'Name' + '</th><th>' + 'Score' + '</th><td>' + 'Time' + '</td></tr>'
 })
 
-document.querySelector(".pagination_1").addEventListener("click", (e) => {
-    const table = document.querySelector(".scoreboard-table")
-    table.innerHTML = '<tr><th>' + 'Rank' + '</th><th>' + 'Name' + '</th><th>' + 'Score' + '</th><td>' + 'Time' + '</td></tr>'
-    getScoreBoard(skip = 0)
+// document.querySelector("#page-num").addEventListener("change", (e) => {
+//     alert(123)
+//     const table = document.querySelector(".scoreboard-table")
+//     table.innerHTML = '<tr><th>' + 'Rank' + '</th><th>' + 'Name' + '</th><th>' + 'Score' + '</th><td>' + 'Time' + '</td></tr>'
+//     const skip = parseInt(document.querySelector(".page-num").textContent)
+//     getScoreBoard((skip-1) * 5)
+// })
+
+document.querySelector(".prev-page").addEventListener("click", (e) => {
+    let el = document.querySelector("#page-num")
+    let pageNum =  parseInt(el.textContent) - 1
+    if (pageNum > 0) {
+        el.innerHTML = pageNum
+
+        getScoreBoard((pageNum-1) * 5)
+    }
 })
-document.querySelector(".pagination_2").addEventListener("click", (e) => {
-    const table = document.querySelector(".scoreboard-table")
-    table.innerHTML = '<tr><th>' + 'Rank' + '</th><th>' + 'Name' + '</th><th>' + 'Score' + '</th><td>' + 'Time' + '</td></tr>'
-    getScoreBoard(skip = 10)
+
+document.querySelector(".next-page").addEventListener("click", (e) => {
+    let el = document.querySelector("#page-num")
+    let pageNum =  parseInt(el.textContent) + 1
+
+    if (pageNum <= 50) {
+        el.innerHTML = pageNum
+        getScoreBoard((pageNum-1) * 5)
+    }
 })
-document.querySelector(".pagination_3").addEventListener("click", (e) => {
-    const table = document.querySelector(".scoreboard-table")
-    table.innerHTML = '<tr><th>' + 'Rank' + '</th><th>' + 'Name' + '</th><th>' + 'Score' + '</th><td>' + 'Time' + '</td></tr>'
-    getScoreBoard(skip = 20)
-})
-document.querySelector(".pagination_4").addEventListener("click", (e) => {
-    const table = document.querySelector(".scoreboard-table")
-    table.innerHTML = '<tr><th>' + 'Rank' + '</th><th>' + 'Name' + '</th><th>' + 'Score' + '</th><td>' + 'Time' + '</td></tr>'
-    getScoreBoard(skip = 30)
-})
-document.querySelector(".pagination_5").addEventListener("click", (e) => {
-    const table = document.querySelector(".scoreboard-table")
-    table.innerHTML = '<tr><th>' + 'Rank' + '</th><th>' + 'Name' + '</th><th>' + 'Score' + '</th><td>' + 'Time' + '</td></tr>'
-    getScoreBoard(skip = 40)
-})
+
 /////////////////////////// Win
 function win() {
     clearDisplay();
@@ -544,9 +548,8 @@ function getScoreBoard(skip, playerName) {
 }
 
 function parseScores(res, skip, playerName) {
-    console.log(res)
     const table = document.querySelector(".scoreboard-table")
-    let tableContent = table.innerHTML
+    let tableContent = "<tr><th>Rank</th><th>Name</th><th>Score</th><th>Time</th></tr>"
 
     for (let i = 0; i < res.length; i++) {
         if (playerName == res[i].player) {
@@ -558,7 +561,7 @@ function parseScores(res, skip, playerName) {
         }
     }
 
-    for (let i = skip; i < skip + 10; i++) {
+    for (let i = skip; i < skip + 5; i++) {
         if (i >= res.length) {
             break
         }
@@ -572,6 +575,7 @@ function parseScores(res, skip, playerName) {
             res[i].score + '</td><td>' +
             time + '</td></tr>'
     }
+
     table.innerHTML = tableContent
 }
 

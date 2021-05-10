@@ -21,20 +21,30 @@ const ENEMY_COOLDOWN = 5.0;
 
 const container = document.querySelector(".game");
 
+let player
+
+let hud = {
+    level: document.getElementById("level"),
+    life: document.getElementById("life"),
+    score: document.getElementById("score"),
+    time: document.getElementById("time"),
+}
+
+
 
 const levels = [
     [
-        [0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
+        [0, 1, 0, 1, 0, 1, 0, 1, 0, 1], //15
         [1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
         [0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
     ],
     [
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], //18
         [0, 0, 1, 1, 1, 1, 1, 1, 0, 0],
         [0, 0, 0, 0, 1, 1, 0, 0, 0, 0]
     ],
     [
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], //30
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
     ],
@@ -119,7 +129,7 @@ function onKeyUp(e) {
 function createPlayer() {
     GAME_STATE.playerX = GAME_WIDTH / 2;
     GAME_STATE.playerY = GAME_HEIGHT - 50;
-    const player = document.createElement("img");
+    player = document.createElement("img");
     player.src = "/src/img/player-blue-1.png";
     player.className = "player";
     container.appendChild(player);
@@ -142,11 +152,10 @@ function updatePlayer(dt) {
     if (GAME_STATE.playerCooldown > 0) {
         GAME_STATE.playerCooldown -= dt;
     }
-    const player = document.querySelector(".player")
     setPositions(player, GAME_STATE.playerX, GAME_STATE.playerY)
 }
 
-function destroyPlayer(player) {
+function destroyPlayer() {
     container.removeChild(player);
     GAME_STATE.gameOver = true;
 }
@@ -211,22 +220,21 @@ function createEnemyLaser(x, y) {
 function updateEnemyLasers(dt) {
     const lasers = GAME_STATE.enemyLasers;
     for (let i = 0; i < lasers.length; i++) {
-        laser = lasers[i];
+        const laser = lasers[i];
         laser.y += dt * LASER_MAX_SPEED;
         if (laser.y + 30 > GAME_HEIGHT) {
             destroyLaser(laser);
         }
         setPositions(laser.element, laser.x, laser.y);
         const r1 = laser.element.getBoundingClientRect();
-        const player = document.querySelector(".player");
         const r2 = player.getBoundingClientRect();
         if (rectsIntersect(r1, r2)) {
             if (GAME_STATE.playerLifes === 0) {
-                destroyPlayer(player);
+                destroyPlayer();
                 break;
             }
             GAME_STATE.playerLifes -= 1;
-            document.getElementById("life").innerHTML = GAME_STATE.playerLifes
+            hud.life.innerHTML = GAME_STATE.playerLifes
             destroyLaser(laser)
         }
     }
@@ -260,7 +268,7 @@ function updateEnemy(dt) {
         const enemy = enemies[i];
         const x = enemy.x + radius * Math.cos(angle)
         const y = enemy.y + radius * Math.sin(angle)
-        setPositions(enemy.element, x, y);
+        setPositions(enemy.element, x, y );
         enemy.cooldown -= dt;
         if (enemy.cooldown <= 0) {
             createEnemyLaser(x, y);
@@ -275,18 +283,17 @@ function destroyEnemy(enemy) {
     container.removeChild(enemy.element);
     enemy.isDead = true;
     GAME_STATE.score += 10;
-    document.getElementById("score").innerHTML = GAME_STATE.score
+    hud.score.innerHTML = GAME_STATE.score
 }
 
 
 ////////////////////////////////////////////////////////////////////////
 function init(level) {
+    hud.score.innerHTML = GAME_STATE.score
+    hud.life.innerHTML = GAME_STATE.playerLifes
+    hud.time.innerHTML = 0
+    hud.level.innerHTML = level
     GAME_STATE.level = level
-    document.getElementById("score").innerHTML = GAME_STATE.score
-    document.getElementById("life").innerHTML = GAME_STATE.playerLifes
-    document.getElementById("time").innerHTML = 0
-    document.getElementById("level").innerHTML = level
-
     const lasers = GAME_STATE.lasers;
     for (let i = 0; i < lasers.length; i++) {
         destroyLaser(lasers[i]);
@@ -337,7 +344,7 @@ function reset() {
     GAME_STATE.playerX = 0;
     GAME_STATE.playerY = 0;
     GAME_STATE.playerCooldown = 0;
-    GAME_STATE.playerLifes = 2;
+    GAME_STATE.playerLifes = 1000;
     GAME_STATE.lasers = [];
     GAME_STATE.enemies = [];
     GAME_STATE.enemyLasers = [];
@@ -348,37 +355,14 @@ function reset() {
 }
 
 function update() {
-    if (GAME_STATE.gameOver) {
-        lose()
-        return
-    }
-
-    if (playerHasWonLevel()) {
-        if (GAME_STATE.level === levels.length) {
-            win()
-            return
-        }
-
-        document.querySelector(".back-to-menu-from-game").addEventListener("click", (e) => {
-            start()
-        })
-
-        const player = document.querySelector(".player")
-        destroyPlayer(player)
-        GAME_STATE.gameOver = false
-        GAME_STATE.level += 1
-        level.textContent = GAME_STATE.level
-        init(GAME_STATE.level)
-    }
-
+    const currentTime = Date.now();
+    const dt = (currentTime - GAME_STATE.lastTime) / 1000;
+    GAME_STATE.lastTime = currentTime;
 
     if (!GAME_STATE.pause) {
-        const currentTime = Date.now();
-        const dt = (currentTime - GAME_STATE.lastTime) / 1000;
-        GAME_STATE.lastTime = currentTime;
         GAME_STATE.time += 1 / 60
 
-        document.getElementById("time").innerHTML = formatTime(GAME_STATE.time)
+       hud.time.innerHTML = formatTime(GAME_STATE.time)
 
         updatePlayer(dt);
         updateLasers(dt);
@@ -387,6 +371,25 @@ function update() {
         document.querySelector(".pause").style.display = "none";
     } else {
         document.querySelector(".pause").style.display = "block";
+    }
+
+    if (GAME_STATE.gameOver) {
+        lose()
+        return
+    }
+
+
+    if (playerHasWonLevel()) {
+        if (GAME_STATE.level === levels.length) {
+            win()
+            return
+        }
+
+        destroyPlayer()
+        GAME_STATE.gameOver = false
+        GAME_STATE.level += 1
+        
+        init(GAME_STATE.level)
     }
 
     window.requestAnimationFrame(update);
@@ -421,7 +424,7 @@ document.querySelector(".scoreboard").addEventListener("click", (e) => {
     reset();
     clearDisplay();
     document.querySelector(".scoreboard-display").style.display = "block";
-    getScoreBoard()
+    getScoreBoard(0)
 })
 
 ///////////////////////// Game pause
@@ -509,14 +512,14 @@ function clearDisplay() {
 
 /////////////////////////// get add score
 function postScore() {
-    player = document.querySelector('[name="player-name"]').value
-    if (player == "") {
+    playerName = document.querySelector('[name="player-name"]').value
+    if (playerName == "") {
         alert("Name can not be empty");
         return;
     }
 
     var score = {
-        player: player,
+        player: playerName,
         score: GAME_STATE.score,
         time: Math.floor(GAME_STATE.time),
     };
@@ -530,26 +533,27 @@ function postScore() {
     reset()
     clearDisplay();
     document.querySelector(".scoreboard-display").style.display = "block";
-    getScoreBoard(0, player)
+    getScoreBoard(0, playerName)
 }
 
-function getScoreBoard(skip, player) {
+function getScoreBoard(skip, playerName) {
     fetch(API_ADRESS, {
         method: 'get'
     }).then(res => res.json())
-        .then(res => parseScores(res, skip, player));
+        .then(res => parseScores(res, skip, playerName));
 }
 
-function parseScores(res, skip, player) {
+function parseScores(res, skip, playerName) {
+    console.log(res)
     const table = document.querySelector(".scoreboard-table")
     let tableContent = table.innerHTML
 
     for (let i = 0; i < res.length; i++) {
-        if (player == res[i].player) {
+        if (playerName == res[i].player) {
             let rank = i + 1
             let percentage = ((rank / res.length) * 100).toFixed(2)
             let topMessage = document.querySelector(".top-message")
-            topMessage.innerHTML = `Congrats ${player}, you are in the top ${percentage}%, in the ${rank} position`
+            topMessage.innerHTML = `Congrats ${playerName}, you are in the top ${percentage}%, in the ${rank} position`
             break
         }
     }

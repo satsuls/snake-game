@@ -344,7 +344,7 @@ function reset() {
     GAME_STATE.playerX = 0;
     GAME_STATE.playerY = 0;
     GAME_STATE.playerCooldown = 0;
-    GAME_STATE.playerLifes = 1000;
+    GAME_STATE.playerLifes = 2;
     GAME_STATE.lasers = [];
     GAME_STATE.enemies = [];
     GAME_STATE.enemyLasers = [];

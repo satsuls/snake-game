@@ -508,7 +508,7 @@ document.querySelector(".back-to-menu-from-lose").addEventListener("click", (e) 
 })
 
 function clearDisplay() {
-    // hud.panel.style.display = "none"
+    hud.panel.style.display = "none"
     document.querySelector(".main-menu").style.display = "none";
     document.querySelector(".pause").style.display = "none";
     document.querySelector(".scoreboard-display").style.display = "none";

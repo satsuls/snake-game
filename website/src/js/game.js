@@ -19,11 +19,12 @@ const ENEMY_VERTICAL_PADDING = 70;
 const ENEMY_VERTICAL_SPACING = 80;
 const ENEMY_COOLDOWN = 5.0;
 
+const dt = 1 / 60
 const container = document.querySelector(".game");
 
 let player
 
-let hud = {
+const hud = {
     level: document.getElementById("level"),
     life: document.getElementById("life"),
     score: document.getElementById("score"),
@@ -104,8 +105,10 @@ function onKeyDown(e) {
         GAME_STATE.spacePressed = true;
     } else if (e.keyCode === KEY_CODE_PAUSE) {
         if (!GAME_STATE.pause) {
+            document.querySelector(".pause").style.display = "block";
             GAME_STATE.pause = true;
         } else {
+            document.querySelector(".pause").style.display = "none";
             GAME_STATE.pause = false;
         }
     }
@@ -133,7 +136,7 @@ function createPlayer() {
     setPositions(player, GAME_STATE.playerX, GAME_STATE.playerY);
 }
 
-function updatePlayer(dt) {
+function updatePlayer() {
     if (GAME_STATE.leftPressed) {
         GAME_STATE.playerX -= dt * PLAYER_MAX_SPEED;
     } else if (GAME_STATE.rightPressed) {
@@ -165,30 +168,30 @@ function playerHasWonLevel() {
 
 // LASER
 function createLaser(x, y) {
-    const element = document.createElement("img");
+    let element = document.createElement("img");
     element.src = "/src/img/laser-blue-1.png";
     element.className = "laser";
     container.appendChild(element);
-    const laser = { x, y, element };
+    let laser = { x, y, element };
     GAME_STATE.lasers.push(laser);
     setPositions(element, x, y);
-    const audio = new Audio("/src/sound/sfx-laser1.ogg");
+    let audio = new Audio("/src/sound/sfx-laser1.ogg");
     audio.play();
 }
 
 
-function updateLasers(dt) {
+function updateLasers() {
     for (let i = 0; i < GAME_STATE.lasers.length; i++) {
         GAME_STATE.lasers[i].y -= dt * LASER_MAX_SPEED;
         if (GAME_STATE.lasers[i].y < 0) {
             destroyLaser(GAME_STATE.lasers[i])
         }
         setPositions(GAME_STATE.lasers[i].element, GAME_STATE.lasers[i].x, GAME_STATE.lasers[i].y)
-        const r1 = GAME_STATE.lasers[i].element.getBoundingClientRect();
+        let r1 = GAME_STATE.lasers[i].element.getBoundingClientRect();
 
         for (let j = 0; j < GAME_STATE.enemies.length; j++) {
             if (GAME_STATE.enemies[j].isDead) continue;
-            const r2 = GAME_STATE.enemies[j].element.getBoundingClientRect();
+            let r2 = GAME_STATE.enemies[j].element.getBoundingClientRect();
             if (rectsIntersect(r1, r2)) {
                 destroyEnemy(GAME_STATE.enemies[j]);
                 destroyLaser(GAME_STATE.lasers[i]);
@@ -202,24 +205,24 @@ function updateLasers(dt) {
 
 ////////////// ENEMY LASER
 function createEnemyLaser(x, y) {
-    const element = document.createElement("img");
+    let element = document.createElement("img");
     element.src = "/src/img/laser-red-5.png";
     element.className = "enemy-laser";
     container.appendChild(element);
-    const laser = { x, y, element };
+    let laser = { x, y, element };
     GAME_STATE.enemyLasers.push(laser);
     setPositions(element)
 }
 
-function updateEnemyLasers(dt) {
+function updateEnemyLasers() {
     for (let i = 0; i < GAME_STATE.enemyLasers.length; i++) {
         GAME_STATE.enemyLasers[i].y += dt * LASER_MAX_SPEED;
         if (GAME_STATE.enemyLasers[i].y + 30 > GAME_HEIGHT) {
             destroyLaser(GAME_STATE.enemyLasers[i]);
         }
         setPositions(GAME_STATE.enemyLasers[i].element, GAME_STATE.enemyLasers[i].x, GAME_STATE.enemyLasers[i].y);
-        const r1 = GAME_STATE.enemyLasers[i].element.getBoundingClientRect();
-        const r2 = player.getBoundingClientRect();
+        let r1 = GAME_STATE.enemyLasers[i].element.getBoundingClientRect();
+        let r2 = player.getBoundingClientRect();
         if (rectsIntersect(r1, r2)) {
             if (GAME_STATE.playerLifes === 0) {
                 destroyPlayer();
@@ -241,23 +244,23 @@ function destroyLaser(laser) {
 
 // ENEMY
 function createEnemy(x, y) {
-    const element = document.createElement("img");
+    let element = document.createElement("img");
     element.src = "/src/img/enemy-blue-1.png";
     element.className = "enemy";
     container.appendChild(element)
-    const enemy = { x, y, cooldown: rand(2.0, ENEMY_COOLDOWN), element }
+    let enemy = { x, y, cooldown: rand(2.0, ENEMY_COOLDOWN), element }
     GAME_STATE.enemies.push(enemy)
     setPositions(element, x, y)
 }
 
 let angle = 0
 let radius = 30
-function updateEnemy(dt) {
+function updateEnemy() {
     angle = (angle + Math.PI / 360) % (Math.PI * 2);
 
     for (let i = 0; i < GAME_STATE.enemies.length; i++) {
-        const x = GAME_STATE.enemies[i].x + radius * Math.cos(angle)
-        const y = GAME_STATE.enemies[i].y + radius * Math.sin(angle)
+        let x = GAME_STATE.enemies[i].x + radius * Math.cos(angle)
+        let y = GAME_STATE.enemies[i].y + radius * Math.sin(angle)
         setPositions(GAME_STATE.enemies[i].element, x, y);
         GAME_STATE.enemies[i].cooldown -= dt;
         if (GAME_STATE.enemies[i].cooldown <= 0) {
@@ -285,7 +288,7 @@ function init(level) {
     hud.time.innerHTML = 0
     hud.level.innerHTML = level
     GAME_STATE.level = level
-    const lasers = GAME_STATE.lasers;
+    let lasers = GAME_STATE.lasers;
     for (let i = 0; i < lasers.length; i++) {
         destroyLaser(lasers[i]);
     }
@@ -296,12 +299,12 @@ function init(level) {
 
 
 function createEnemies(level) {
-    const enemySpacing = (GAME_WIDTH - ENEMY_HORIZONTAL_PADDING * 2) / (ENEMIES_PER_ROW - 1);
-    const pattern = levels[level - 1]
+    let enemySpacing = (GAME_WIDTH - ENEMY_HORIZONTAL_PADDING * 2) / (ENEMIES_PER_ROW - 1);
+    let pattern = levels[level - 1]
     for (let i = 0; i < pattern.length; i += 1) {
-        const y = ENEMY_VERTICAL_PADDING + i * ENEMY_VERTICAL_SPACING;
+        let y = ENEMY_VERTICAL_PADDING + i * ENEMY_VERTICAL_SPACING;
         for (let j = 0; j < pattern[0].length; j += 1) {
-            const x = j * enemySpacing + ENEMY_HORIZONTAL_PADDING;
+            let x = j * enemySpacing + ENEMY_HORIZONTAL_PADDING;
             if (pattern[i][j] === 1) {
                 createEnemy(x, y);
             }
@@ -346,22 +349,14 @@ function reset() {
 }
 
 function update() {
-    const currentTime = Date.now();
-    const dt = (currentTime - GAME_STATE.lastTime) / 1000;
-    GAME_STATE.lastTime = currentTime;
-
     if (!GAME_STATE.pause) {
-        GAME_STATE.time += 1 / 60
-
+        GAME_STATE.time += dt
         hud.time.innerHTML = formatTime(GAME_STATE.time)
 
-        updatePlayer(dt);
-        updateLasers(dt);
-        updateEnemy(dt);
-        updateEnemyLasers(dt);
-        document.querySelector(".pause").style.display = "none";
-    } else {
-        document.querySelector(".pause").style.display = "block";
+        updatePlayer();
+        updateLasers();
+        updateEnemy();
+        updateEnemyLasers();   
     }
 
     if (GAME_STATE.gameOver) {
@@ -441,14 +436,6 @@ document.querySelector(".back-to-menu-from-scoreboard").addEventListener("click"
     const table = document.querySelector(".scoreboard-table")
     table.innerHTML = '<tr><th>' + 'Rank' + '</th><th>' + 'Name' + '</th><th>' + 'Score' + '</th><td>' + 'Time' + '</td></tr>'
 })
-
-// document.querySelector("#page-num").addEventListener("change", (e) => {
-//     alert(123)
-//     const table = document.querySelector(".scoreboard-table")
-//     table.innerHTML = '<tr><th>' + 'Rank' + '</th><th>' + 'Name' + '</th><th>' + 'Score' + '</th><td>' + 'Time' + '</td></tr>'
-//     const skip = parseInt(document.querySelector(".page-num").textContent)
-//     getScoreBoard((skip-1) * 5)
-// })
 
 document.querySelector(".prev-page").addEventListener("click", (e) => {
     let el = document.querySelector("#page-num")
@@ -542,7 +529,7 @@ function getScoreBoard(skip, playerName) {
 }
 
 function parseScores(res, skip, playerName) {
-    const table = document.querySelector(".scoreboard-table")
+    let table = document.querySelector(".scoreboard-table")
     let tableContent = "<tr><th>Rank</th><th>Name</th><th>Score</th><th>Time</th></tr>"
 
     for (let i = 0; i < res.length; i++) {

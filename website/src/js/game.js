@@ -178,27 +178,24 @@ function createLaser(x, y) {
 
 
 function updateLasers(dt) {
-    const lasers = GAME_STATE.lasers;
-    for (let i = 0; i < lasers.length; i++) {
-        const laser = lasers[i];
-        laser.y -= dt * LASER_MAX_SPEED;
-        if (laser.y < 0) {
-            destroyLaser(laser)
+    for (let i = 0; i < GAME_STATE.lasers.length; i++) {
+        GAME_STATE.lasers[i].y -= dt * LASER_MAX_SPEED;
+        if (GAME_STATE.lasers[i].y < 0) {
+            destroyLaser(GAME_STATE.lasers[i])
         }
-        setPositions(laser.element, laser.x, laser.y)
-        const r1 = laser.element.getBoundingClientRect();
-        const enemies = GAME_STATE.enemies;
-        for (let j = 0; j < enemies.length; j++) {
-            const enemy = enemies[j];
-            if (enemy.isDead) continue;
-            const r2 = enemy.element.getBoundingClientRect();
+        setPositions(GAME_STATE.lasers[i].element, GAME_STATE.lasers[i].x, GAME_STATE.lasers[i].y)
+        const r1 = GAME_STATE.lasers[i].element.getBoundingClientRect();
+
+        for (let j = 0; j < GAME_STATE.enemies.length; j++) {
+            if (GAME_STATE.enemies[j].isDead) continue;
+            const r2 = GAME_STATE.enemies[j].element.getBoundingClientRect();
             if (rectsIntersect(r1, r2)) {
-                destroyEnemy(enemy);
-                destroyLaser(laser)
+                destroyEnemy(GAME_STATE.enemies[j]);
+                destroyLaser(GAME_STATE.lasers[i]);
+                break
             }
         }
     }
-
     GAME_STATE.lasers = GAME_STATE.lasers.filter(e => !e.isDead);
 }
 
@@ -215,15 +212,13 @@ function createEnemyLaser(x, y) {
 }
 
 function updateEnemyLasers(dt) {
-    const lasers = GAME_STATE.enemyLasers;
-    for (let i = 0; i < lasers.length; i++) {
-        const laser = lasers[i];
-        laser.y += dt * LASER_MAX_SPEED;
-        if (laser.y + 30 > GAME_HEIGHT) {
-            destroyLaser(laser);
+    for (let i = 0; i < GAME_STATE.enemyLasers.length; i++) {
+        GAME_STATE.enemyLasers[i].y += dt * LASER_MAX_SPEED;
+        if (GAME_STATE.enemyLasers[i].y + 30 > GAME_HEIGHT) {
+            destroyLaser(GAME_STATE.enemyLasers[i]);
         }
-        setPositions(laser.element, laser.x, laser.y);
-        const r1 = laser.element.getBoundingClientRect();
+        setPositions(GAME_STATE.enemyLasers[i].element, GAME_STATE.enemyLasers[i].x, GAME_STATE.enemyLasers[i].y);
+        const r1 = GAME_STATE.enemyLasers[i].element.getBoundingClientRect();
         const r2 = player.getBoundingClientRect();
         if (rectsIntersect(r1, r2)) {
             if (GAME_STATE.playerLifes === 0) {
@@ -232,7 +227,7 @@ function updateEnemyLasers(dt) {
             }
             GAME_STATE.playerLifes -= 1;
             hud.life.innerHTML = GAME_STATE.playerLifes
-            destroyLaser(laser)
+            destroyLaser(GAME_STATE.enemyLasers[i])
         }
     }
     GAME_STATE.enemyLasers = GAME_STATE.enemyLasers.filter(e => !e.isDead)
@@ -258,18 +253,16 @@ function createEnemy(x, y) {
 let angle = 0
 let radius = 30
 function updateEnemy(dt) {
-    const enemies = GAME_STATE.enemies
     angle = (angle + Math.PI / 360) % (Math.PI * 2);
 
-    for (let i = 0; i < enemies.length; i++) {
-        const enemy = enemies[i];
-        const x = enemy.x + radius * Math.cos(angle)
-        const y = enemy.y + radius * Math.sin(angle)
-        setPositions(enemy.element, x, y);
-        enemy.cooldown -= dt;
-        if (enemy.cooldown <= 0) {
+    for (let i = 0; i < GAME_STATE.enemies.length; i++) {
+        const x = GAME_STATE.enemies[i].x + radius * Math.cos(angle)
+        const y = GAME_STATE.enemies[i].y + radius * Math.sin(angle)
+        setPositions(GAME_STATE.enemies[i].element, x, y);
+        GAME_STATE.enemies[i].cooldown -= dt;
+        if (GAME_STATE.enemies[i].cooldown <= 0) {
             createEnemyLaser(x, y);
-            enemy.cooldown = rand(2.0, ENEMY_COOLDOWN);
+            GAME_STATE.enemies[i].cooldown = rand(2.0, ENEMY_COOLDOWN);
         }
 
     }
@@ -459,21 +452,21 @@ document.querySelector(".back-to-menu-from-scoreboard").addEventListener("click"
 
 document.querySelector(".prev-page").addEventListener("click", (e) => {
     let el = document.querySelector("#page-num")
-    let pageNum =  parseInt(el.textContent) - 1
+    let pageNum = parseInt(el.textContent) - 1
     if (pageNum > 0) {
         el.innerHTML = pageNum
 
-        getScoreBoard((pageNum-1) * 5)
+        getScoreBoard((pageNum - 1) * 5)
     }
 })
 
 document.querySelector(".next-page").addEventListener("click", (e) => {
     let el = document.querySelector("#page-num")
-    let pageNum =  parseInt(el.textContent) + 1
+    let pageNum = parseInt(el.textContent) + 1
 
     if (pageNum <= 50) {
         el.innerHTML = pageNum
-        getScoreBoard((pageNum-1) * 5)
+        getScoreBoard((pageNum - 1) * 5)
     }
 })
 

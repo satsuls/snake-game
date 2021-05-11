@@ -24,6 +24,7 @@ const container = document.querySelector(".game");
 let player
 
 let hud = {
+    panel: document.querySelector(".game-panel"),
     level: document.getElementById("level"),
     life: document.getElementById("life"),
     score: document.getElementById("score"),
@@ -289,6 +290,7 @@ function destroyEnemy(enemy) {
 
 ////////////////////////////////////////////////////////////////////////
 function init(level) {
+    hud.panel.style.display = "block"
     hud.score.innerHTML = GAME_STATE.score
     hud.life.innerHTML = GAME_STATE.playerLifes
     hud.time.innerHTML = 0
@@ -506,6 +508,7 @@ document.querySelector(".back-to-menu-from-lose").addEventListener("click", (e) 
 })
 
 function clearDisplay() {
+    // hud.panel.style.display = "none"
     document.querySelector(".main-menu").style.display = "none";
     document.querySelector(".pause").style.display = "none";
     document.querySelector(".scoreboard-display").style.display = "none";

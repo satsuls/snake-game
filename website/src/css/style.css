@@ -36,10 +36,11 @@ footer {
   justify-content: center;
   align-items: center;
   background: url(/src/img/background-blue.png);
-  animation: scroll-background 5s 1;
+  animation: scroll-background 5s linear infinite;
 }
 
 .game {
+  display:none;
   align-items: center;
   width: 800px;
   height: 640px;
@@ -51,7 +52,7 @@ footer {
 
 
 .game-panel{
-  display:none;
+  display:block;
   position: absolute;
   font-family:'Courier New', Courier, monospace;
   font-size: 20px;
@@ -77,6 +78,8 @@ footer {
   margin-top: -18px;
   width: 40px;
 }
+
+
 
 .game .player {
   position: absolute;
@@ -143,7 +146,6 @@ footer {
   animation: pop-in 1s;
 }
 
-
 .btn {
   border: 2px solid #36bbf5;
   border-radius: 3px;
@@ -158,6 +160,7 @@ footer {
   padding: 10px 40px;
   font: 14px sans-serif;
 }
+
 @keyframes pop-in {
   0% {
     opacity: 0;

@@ -24,7 +24,6 @@ const container = document.querySelector(".game");
 let player
 
 let hud = {
-    panel: document.querySelector(".game-panel"),
     level: document.getElementById("level"),
     life: document.getElementById("life"),
     score: document.getElementById("score"),
@@ -35,19 +34,16 @@ let hud = {
 
 const levels = [
     [
-        [0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
-        [1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
-        [0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     ],
     [
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [0, 0, 1, 1, 1, 1, 1, 1, 0, 0],
-        [0, 0, 0, 0, 1, 1, 0, 0, 0, 0]
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 0],
     ],
     [
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 0, 1, 1, 1, 1, 1, 1, 0, 0]
     ],
 ]
 
@@ -290,7 +286,7 @@ function destroyEnemy(enemy) {
 
 ////////////////////////////////////////////////////////////////////////
 function init(level) {
-    hud.panel.style.display = "block"
+    container.style.display = "block"
     hud.score.innerHTML = GAME_STATE.score
     hud.life.innerHTML = GAME_STATE.playerLifes
     hud.time.innerHTML = 0
@@ -484,6 +480,7 @@ document.querySelector(".next-page").addEventListener("click", (e) => {
 /////////////////////////// Win
 function win() {
     clearDisplay();
+    container.style.display = "block"
     document.querySelector(".congratulations").style.display = "block";
     document.querySelector(".name-input").style.display = "block";
     document.querySelector(".name-input").style.background = "#c7a526";
@@ -497,6 +494,7 @@ document.querySelector(".back-to-menu-from-win").addEventListener("click", (e) =
 /////////////////////////// Lose
 function lose() {
     clearDisplay();
+    container.style.display = "block"
     document.querySelector(".game-over").style.display = "block";
     document.querySelector(".name-input").style.display = "block";
     document.querySelector(".name-input").style.background = "#6b1818";
@@ -508,7 +506,7 @@ document.querySelector(".back-to-menu-from-lose").addEventListener("click", (e) 
 })
 
 function clearDisplay() {
-    hud.panel.style.display = "none"
+    container.style.display = "none"
     document.querySelector(".main-menu").style.display = "none";
     document.querySelector(".pause").style.display = "none";
     document.querySelector(".scoreboard-display").style.display = "none";

@@ -358,6 +358,8 @@ function reset() {
     GAME_STATE.pause = false;
     GAME_STATE.level = 0;
 
+    window.cancelAnimationFrame(requestID)
+    requestID = undefined;
     clearInterval(timerInterval)
 }
 
@@ -436,7 +438,6 @@ document.querySelector(".continue").addEventListener("click", (e) => {
 
 
 document.querySelector(".back-to-menu-from-game").addEventListener("click", (e) => {
-    requestID = undefined;
     start()
 })
 

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Space Game</title>
+  <link rel="stylesheet" href="/src/css/style.css">
+</head>
+
+<body>
+  <div class="wrap">
+    <header>Space Invaders</header>
+    
+    <div class="game-wrapper">
+      <div class="game">
+        <div class="game-panel">
+          <div></h5>LEVEL: <span id="level"></span>   |   LIFE: <span id="life"></span>   |   SCORE: <span id="score"></span>   |   TIME: <span id="time"></span></h5></div>
+        </div>
+      </div>
+      <div class="main-menu">
+        <h2>Space Invaders</h2>
+        <button class="start-game">Start game</button>
+        <button class="scoreboard">Scoreboard</button>
+      </div>
+      <div class="pause">
+        <button class="start-game">Restart</button>
+        <button class="continue">Continue</button>
+        <button class="back-to-menu-from-game">Main menu</button>
+      </div>
+      <div class="scoreboard-display">
+        <div class="top-message"></div> <br>
+        <table class="scoreboard-table"></table> <br>
+        <button class="prev-page">prev</button>
+        <span id="page-num">1</span> / 50
+        <button class="next-page">next</button>
+        <button class="back-to-menu-from-scoreboard">Back</button>
+      </div>
+      <div class="congratulations">
+        <button class="start-game">Restart</button>
+        <button class="back-to-menu-from-win">Main menu</button>
+      </div>
+      <div class="game-over">
+        <button class="start-game">Restart</button>
+        <button class="back-to-menu-from-lose">Main menu</button>
+      </div>
+      <div class="name-input">
+        <input type="text" name="player-name" placeholder="Name" required> <br><br>
+        <button class="submit">Submit</button>
+      </div>
+    </div>
+    <footer>Left/right keys to move, spacebar to shoot, P to pause</footer>
+  </div>
+  <script src="/src/js/game.js "></script>
+</body>
+
+</html>
